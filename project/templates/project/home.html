@@ -1,0 +1,215 @@
+{% extends 'project/master.html' %}
+{% load static %}
+
+{% block title %} My Blog {% endblock %}
+
+
+{% block content %}
+
+
+<!-- Page Content -->
+<!-- Banner Starts Here -->
+<div class="main-banner header-text">
+  <div class="container-fluid">
+    <div class="owl-banner owl-carousel"></div>
+  </div>
+</div>
+
+<!-- Banner Ends Here -->
+
+<section class="call-to-action">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <h4>Series</h4>
+        <div class="btn-group" role="group" aria-label="Basic example">
+          {% for s in series %}
+          <div class="main-button">
+            <a href="{% url 'series-detail' s.pk  %}">{{ s.name }}</a>
+          </div>
+          &nbsp;
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="blog-posts">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="all-blog-posts">
+          <div class="row">
+            {% for blog in blogs %}
+            <div class="col-lg-12">
+              <div class="blog-post">
+                <div class="down-content">
+                  <h4>{{ blog.title }}</h4>
+                  <ul class="post-info">
+                    <li><a href="#">{{ blog.author }}</a></li>
+                    <li><a href="#">May 31, 2020</a></li>
+                    <li>
+                      <a href="#">{{ blog.comment_set.all.count }} Comments</a>
+                    </li>
+                  </ul>
+                  <p>{{ blog.content }}</p>
+                  <h4 style="font-weight: normal">Comments...</h4>
+                  {% for comments in blog.comment_set.all %}
+                  <br />
+                  <i class="fa fa-user"></i>
+                  <b>{{ comments.commenter }} 
+                    <a href="{% url 'comment-delete' comments.pk %}" style="color:grey"><i class="fa fa-trash"></i></a>    
+                  </b>
+                  <br />
+                  {{ comments.comment_detail }}
+                  <a href="{% url 'comment-update' comments.pk %}" style="color:grey"><i class="fa fa-edit"></i></a>
+                  <br />
+                  {% endfor %}
+
+                  <br /><br />
+                  <div class="button">
+                    <a href="{% url 'blog-comment' %}">Add Your Comment?</a>
+                  </div>
+
+                  <div class="post-options">
+                    <div class="row">
+                      <div class="col-6">
+                        <ul class="post-tags">
+                          <li><i class="fa fa-tags"></i></li>
+                          {% for tag in blog.tags.all %}
+                          <li><a href="#">{{ tag }}</a></li>
+                          {% endfor %}
+                        </ul>
+                      </div>
+                      <div class="col-6">
+                        <ul class="post-share">
+                          <li><i class="fa fa-bookmark"></i></li>
+                          <li><a href="{% url 'series-detail' blog.series.pk  %}">{{ blog.series }}</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+
+            <div class="col-lg-12">
+              <div class="main-button">
+                <a href="{% url 'blog-create' %}">Add Your Own Post?</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="sidebar">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="sidebar-item search">
+                <form id="search_form" name="gs" method="GET" action="#">
+                  <input
+                    type="text"
+                    name="q"
+                    class="searchText"
+                    placeholder="type to search..."
+                    autocomplete="on"
+                  />
+                </form>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <div class="sidebar-item recent-posts">
+                <div class="sidebar-heading">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="content">
+                  <ul>
+                    {% for blog in blogs %}
+                      {% if forloop.counter <= 3 %}
+                        <li>
+                          <a href="{% url 'post-detail' blog.pk %}">
+                            <h5>{{ blog.title }}</h5>
+                            <span>{{ blog.author }}</span>
+                          </a>
+                        </li>
+                      {% endif %}
+                    {% endfor %}
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <div class="sidebar-item categories">
+                <div class="sidebar-heading">
+                  <h2>Series</h2>
+                </div>
+                <div class="content">
+                  <ul>
+                    {% for s in series %}
+                    <li><a href="{% url 'series-detail' s.pk  %}">{{ s.name }}</a></li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <div class="sidebar-item tags">
+                <div class="sidebar-heading">
+                  <h2>Tag</h2>
+                </div>
+                <div class="content">
+                  <ul>
+                    {% for t in tags %}
+                    <li><a href="{% url 'tag-detail' t.pk  %}">{{ t.name }}</a></li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <ul class="social-icons">
+          <li><a href="#">Facebook</a></li>
+          <li><a href="#">Twitter</a></li>
+          <li><a href="#">Behance</a></li>
+          <li><a href="#">Linkedin</a></li>
+          <li><a href="#">Dribbble</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-12">
+        <div class="copyright-text">
+          <p>
+            Copyright 2023 My Blog. | Design:
+            <a rel="nofollow" href="#" target="_parent">AlphaChong</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script language="text/Javascript">
+  cleared[0] = cleared[1] = cleared[2] = 0; //set a cleared flag for each field
+  function clearField(t) {
+    //declaring the array outside of the
+    if (!cleared[t.id]) {
+      // function makes it static and global
+      cleared[t.id] = 1; // you could use true and false, but that's more typing
+      t.value = ""; // with more chance of typos
+      t.style.color = "#fff";
+    }
+  }
+</script>
+{% endblock %}

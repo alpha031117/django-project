@@ -1,0 +1,50 @@
+{% extends "app_blog/base.html" %}
+
+{% block title %}
+  Tag List
+{% endblock %}
+
+{% block content %}
+        <h1 class="display-4" style="text-align: center;">Tag {{ post.name }} List</h1>
+        <div style="text-align: center;">
+            <a href="{% url 'tag-update' post.pk %}" class="btn btn-primary">Edit Tag Name -- {{ post.name }}</a>
+            &nbsp;
+            <a href="{% url 'tag-delete' post.pk %}" class="btn btn-danger">Delete Tag Name -- {{ post.name }}</a>
+        </div>
+        <br/><br/>
+        <table id="blogTable" class="table display" style="text-align: center;">
+            <thead>
+                <th>No</th>
+                <th>Title</th>
+                <th>Author</th>
+            </thead>
+            <tbody style="text-align: left;">
+                {% for blog in tag %}
+                    <tr>
+                        <td>
+                            {{ blog.id }}
+                        </td>
+                        <td>
+                            <a href="{% url 'post-detail' blog.pk %}">
+                                {{ blog.title }}
+                            </a>                  
+                        </td>
+                        <td>{{ blog.author }}</td>
+                    </tr>
+                    {% endfor %}
+            </tbody>
+        </table>
+    </body>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+    <script>
+
+        var table = $('#blogTable').DataTable({
+            //serverSide: true,
+        });
+
+    </script>
+
+{% endblock %}

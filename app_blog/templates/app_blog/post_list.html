@@ -1,0 +1,56 @@
+{% extends "app_blog/base.html" %}
+
+{% block title %}
+  Blog List
+{% endblock %}
+
+{% block content %}
+
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+
+        <h1 class="display-4" style="text-align: center;">Blog List</h1>
+
+        <table id="blogTable" class="table display" style="text-align: center;">
+            <thead>
+                <th>No</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Content</th>
+                <th>Action</th>
+            </thead>
+            <tbody>
+                {% for blog in blogs %}
+                    <tr>
+                        <td>
+                            {{ forloop.counter }}
+                        </td>
+                        <td>
+                            <a href="{% url 'blog-update' blog.pk %}">
+                                {{ blog.title }}
+                            </a>                  
+                        </td>
+                        <td>{{ blog.author }}</td>
+                        <td>{{ blog.content }}</td>
+                        <td> 
+                            <a href="{% url 'blog-delete' blog.pk %}" class="btn btn-danger">Delete</a>
+                            <a href="{% url 'blog-update' blog.pk %}" class="btn btn-success">Edit</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{% url 'blog-create' %}" class="btn btn-primary">Create new blog</a>
+    </body>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+    <script>
+
+        var table = $('#blogTable').DataTable({
+            //serverSide: true,
+        });
+
+    </script>
+
+{% endblock %}
