@@ -20,15 +20,7 @@ def blog_list(request):
 
 def series_detail(request):
     series = Series.objects.all()
-    series_data = []
-    for s in series:
-        post_count = Post.objects.filter(series=s).count()
-        series_data.append({
-            'series': s.pk,
-            'series_name': s.name,
-            'series_post_number': post_count
-        })
-    return render(request, 'app_blog/list_series.html', {'series_data': series_data})	
+    return render(request, 'app_blog/list_series.html', {'series': series})	
 
 def tag_detail(request):
     tag = Tag.objects.all()
@@ -105,8 +97,9 @@ class SeriesDeleteView(DeleteView):
 # Model Post CRUD
 class PostDetailView(DetailView):
     model = Post
-    template_name = 'app_blog/post_detail.html'
-    context_object_name = 'post'
+    # context_object_name = 'post'
+
+    
 
 class PostCreateView(CreateView):
     model = Post
@@ -154,12 +147,6 @@ class CommentDetailView(DetailView):
 class TagDetailView(DetailView):
     model = Tag
     template_name = 'app_blog/tag_list.html'
-    context_object_name = 'post'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['tag'] = Post.objects.filter(tags=self.object)
-        return context
 
 class TagCreateView(CreateView):
     model = Tag

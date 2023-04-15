@@ -14,24 +14,36 @@
             <thead>
                 <th>No</th>
                 <th>Series Name</th>
-                <th>Number of Blog</th>
+                <th>Number of Posts</th>
+                <th>Posts</th>
                 <th>Action</th>
             </thead>
             <tbody style="text-align: left;">
-                {% for s in series_data %}
+                {% for s in series %}
                     <tr>
                         <td>
                             {{ forloop.counter }}
                         </td>
                         <td>
-                            <a href="{% url 'series-detail' s.series %}">
-                                {{ s.series_name }}
+                            <a href="{% url 'series-detail' s.id %}">
+                                {{ s.name }}
                             </a>                  
                         </td>
-                        <td>{{ s.series_post_number }}</td>
+                        <td>{{ s.post_set.all.count }}</td>
+                        <td>
+                            <ol>
+                                {% for post in s.post_set.all %}
+                                    <li>{{ post }}</li>
+                                {% empty %}
+                                    <span class="text-muted">
+                                        No posts related
+                                    </span>
+                                {% endfor %}
+                            </ol>
+                        </td>
                         <td> 
-                            <a href="{% url 'series-delete' s.series %}" class="btn btn-danger">Delete</a>
-                            <a href="{% url 'series-update' s.series %}" class="btn btn-success">Edit</a>
+                            <a href="{% url 'series-delete' s.id %}" class="btn btn-danger">Delete</a>
+                            <a href="{% url 'series-update' s.id %}" class="btn btn-success">Edit</a>
                         </td>
                     </tr>
                 {% endfor %}

@@ -5,31 +5,32 @@
 {% endblock %}
 
 {% block content %}
+
         <h1 class="display-4" style="text-align: center;">Tag {{ post.name }} List</h1>
         <div style="text-align: center;">
-            <a href="{% url 'tag-update' post.pk %}" class="btn btn-primary">Edit Tag Name -- {{ post.name }}</a>
+            <a href="{% url 'tag-update' tag.pk %}" class="btn btn-primary">Edit Tag Name -- {{ post.name }}</a>
             &nbsp;
-            <a href="{% url 'tag-delete' post.pk %}" class="btn btn-danger">Delete Tag Name -- {{ post.name }}</a>
+            <a href="{% url 'tag-delete' tag.pk %}" class="btn btn-danger">Delete Tag Name -- {{ post.name }}</a>
         </div>
         <br/><br/>
         <table id="blogTable" class="table display" style="text-align: center;">
             <thead>
-                <th>No</th>
+                <th>ID</th>
                 <th>Title</th>
                 <th>Author</th>
             </thead>
             <tbody style="text-align: left;">
-                {% for blog in tag %}
+                {% for post in tag.post_set.all %}
                     <tr>
                         <td>
-                            {{ blog.id }}
+                            {{ post.id }}
                         </td>
                         <td>
-                            <a href="{% url 'post-detail' blog.pk %}">
-                                {{ blog.title }}
+                            <a href="{% url 'post-detail' post.pk %}">
+                                {{ post.title }}
                             </a>                  
                         </td>
-                        <td>{{ blog.author }}</td>
+                        <td>{{ post.author }}</td>
                     </tr>
                     {% endfor %}
             </tbody>
