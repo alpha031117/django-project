@@ -1,16 +1,16 @@
 {% extends "app_blog/base.html" %}
 
 {% block title %}
-  Delete Series
+  Delete Tag
 {% endblock %}
 
 {% block content %}
 
 <h1>Delete Confirmation</h1>
-<p>Are you sure you want to delete "{{ object.name }}"?</p>
+<p>Are you sure you want to delete Tag "{{ object.name }}"?</p>
 <form method="post">
     {% csrf_token %}
     <input type="submit" value="Confirm" class="btn btn-primary" style="background-color:#f48840; border-color: #f48840;" />
-    <a href="{% url 'blog-list' %}">Cancel</a>
+    <a href="{% url 'app_blog:tag-list' %}">Cancel</a>
 </form>
 {% endblock %}

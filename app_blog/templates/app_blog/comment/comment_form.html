@@ -1,0 +1,25 @@
+{% extends "app_blog/base.html" %}
+
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+
+
+
+{% block title %}
+  Comment Post
+{% endblock %}
+
+{% block content %}
+        <h1 class="display-4" style="text-align: center;">Comment</h1>
+        <div class="container">
+            <div class="row my-5">
+                <div class="col-md-12">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{form| crispy}}
+                        <input type="submit" class="btn btn-primary" value="Add Comment" />
+                    </form>
+                </div>
+            </div>
+        </div>
+{% endblock %}

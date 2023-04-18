@@ -15,29 +15,41 @@
                 <th>No</th>
                 <th>Tag Name</th>
                 <th>Number of Blog</th>
+                <th>Post</th>
                 <th>Action</th>
             </thead>
             <tbody style="text-align: left;">
-                {% for t in tag_data %}
+                {% for t in object_list %}
                     <tr>
                         <td>
                             {{ forloop.counter }}
                         </td>
                         <td>
-                            <a href="{% url 'tag-detail' t.tag %}">
-                                {{ t.tag_name }}
+                            <a href="{% url 'app_blog:tag-detail' t.id %}">
+                                {{ t.name }}
                             </a>                  
                         </td>
-                        <td>{{ t.tag_post_number }}</td>
+                        <td>{{ t.post_set.all.count }}</td>
+                        <td>
+                            <ol>
+                                {% for post in t.post_set.all %}
+                                    <li>{{ post.title }}</li>
+                                {% empty %}
+                                    <span class="text-muted">
+                                        No posts related
+                                    </span>
+                                {% endfor %}
+                            </ol>
+                        </td>
                         <td> 
-                            <a href="{% url 'tag-delete' t.tag %}" class="btn btn-danger">Delete</a>
-                            <a href="{% url 'tag-update' t.tag %}" class="btn btn-success">Edit</a>
+                            <a href="{% url 'app_blog:tag-delete' t.id %}" class="btn btn-danger">Delete</a>
+                            <a href="{% url 'app_blog:tag-update' t.id %}" class="btn btn-success">Edit</a>
                         </td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
-        <a href="{% url 'tag-create' %}" class="btn btn-primary">Create new tag</a>
+        <a href="{% url 'app_blog:tag-create' %}" class="btn btn-primary">Create new tag</a>
     </body>
 
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>

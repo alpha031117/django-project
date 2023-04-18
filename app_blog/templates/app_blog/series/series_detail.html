@@ -1,17 +1,18 @@
 {% extends "app_blog/base.html" %}
 
 {% block title %}
-  Series List
+  Series Detail
 {% endblock %}
 
 {% block content %}
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 
-        <h1 class="display-4" style="text-align: center;">Series {{ post.name }} List</h1>
+        <h1 class="display-4" style="text-align: center;">Series <i>{{ series.name }}</i> Detail</h1>
+        <br/>
         <div style="text-align: center;">
-            <a href="{% url 'series-update' post.pk %}" class="btn btn-primary">Edit Series Name -- {{post.name}}</a>
+            <a href="{% url 'app_blog:series-update' series.pk %}" class="btn btn-primary">Edit Series Name -- {{ series.name }}</a>
             &nbsp;
-            <a href="{% url 'series-delete' post.pk %}" class="btn btn-danger">Delete Series Name -- {{post.name}}</a>
+            <a href="{% url 'app_blog:series-delete' series.pk %}" class="btn btn-danger">Delete Series Name -- {{ series.name }}</a>
         </div>
         <br/><br/>
         <table id="blogTable" class="table display" style="text-align: center;">
@@ -21,17 +22,17 @@
                 <th>Author</th>
             </thead>
             <tbody style="text-align: left;">
-                {% for blog in series %}
+                {% for post in post %}
                     <tr>
                         <td>
-                            {{ blog.id }}
+                            {{ forloop.counter }}
                         </td>
                         <td>
-                            <a href="{% url 'post-detail' blog.pk %}">
-                                {{ blog.title }}
+                            <a href="{% url 'app_blog:post-detail' post.pk %}">
+                                {{ post.title }}
                             </a>                  
                         </td>
-                        <td>{{ blog.author }}</td>
+                        <td>{{ post.author }}</td>
                     </tr>
                     {% endfor %}
             </tbody>

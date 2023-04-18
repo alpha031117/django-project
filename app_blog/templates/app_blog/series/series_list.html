@@ -19,13 +19,13 @@
                 <th>Action</th>
             </thead>
             <tbody style="text-align: left;">
-                {% for s in series %}
+                {% for s in object_list %}
                     <tr>
                         <td>
                             {{ forloop.counter }}
                         </td>
                         <td>
-                            <a href="{% url 'series-detail' s.id %}">
+                            <a href="{% url 'app_blog:series-detail' s.id %}">
                                 {{ s.name }}
                             </a>                  
                         </td>
@@ -33,7 +33,7 @@
                         <td>
                             <ol>
                                 {% for post in s.post_set.all %}
-                                    <li>{{ post }}</li>
+                                    <li>{{ post.title }}</li>
                                 {% empty %}
                                     <span class="text-muted">
                                         No posts related
@@ -42,14 +42,14 @@
                             </ol>
                         </td>
                         <td> 
-                            <a href="{% url 'series-delete' s.id %}" class="btn btn-danger">Delete</a>
-                            <a href="{% url 'series-update' s.id %}" class="btn btn-success">Edit</a>
+                            <a href="{% url 'app_blog:series-delete' s.id %}" class="btn btn-danger">Delete</a>
+                            <a href="{% url 'app_blog:series-update' s.id %}" class="btn btn-success">Edit</a>
                         </td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
-        <a href="{% url 'series-create' %}" class="btn btn-primary">Create new series</a>
+        <a href="{% url 'app_blog:series-create' %}" class="btn btn-primary">Create new series</a>
     </body>
 
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>

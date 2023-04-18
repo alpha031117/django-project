@@ -19,8 +19,9 @@ from . import views
 from django.conf.urls.static import static
 from django.conf import settings
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name="blog-home"), # project home
-    path('blog/', include('app_blog.urls')), # extends into app_blog urls
+    path('blog/', include('app_blog.urls', namespace='app_blog')), # extends into app_blog urls
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

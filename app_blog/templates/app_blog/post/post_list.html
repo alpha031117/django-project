@@ -18,28 +18,28 @@
                 <th>Content</th>
                 <th>Action</th>
             </thead>
-            <tbody>
-                {% for blog in blogs %}
+            <tbody style="text-align: left;">
+                {% for blog in object_list %}
                     <tr>
                         <td>
                             {{ forloop.counter }}
                         </td>
                         <td>
-                            <a href="{% url 'blog-update' blog.pk %}">
+                            <a href="{% url 'app_blog:post-detail' blog.pk %}">
                                 {{ blog.title }}
                             </a>                  
                         </td>
                         <td>{{ blog.author }}</td>
                         <td>{{ blog.content }}</td>
                         <td> 
-                            <a href="{% url 'blog-delete' blog.pk %}" class="btn btn-danger">Delete</a>
-                            <a href="{% url 'blog-update' blog.pk %}" class="btn btn-success">Edit</a>
+                            <a href="{% url 'app_blog:post-delete' blog.pk %}" class="btn btn-danger">Delete</a>
+                            <a href="{% url 'app_blog:post-update' blog.pk %}" class="btn btn-success">Edit</a>
                         </td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
-        <a href="{% url 'blog-create' %}" class="btn btn-primary">Create new blog</a>
+        <a href="{% url 'app_blog:post-create' %}" class="btn btn-primary">Create new post</a>
     </body>
 
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>

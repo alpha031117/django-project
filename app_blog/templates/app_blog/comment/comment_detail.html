@@ -1,0 +1,26 @@
+{% extends "app_blog/base.html" %}
+
+{% block title %}
+  Comment Detail
+{% endblock %}
+
+{% block content %}
+<h1 class="display-4" style="text-align: center;">Comment Detail</h1>
+    <h3><i class="fa fa-user"></i> {{ comment.commenter }}</h3>
+    <br/>
+    <h3>Commented Post</h3>
+    <p style="font-size: large;">{{ comment.post.title }}</p>
+    <p style="font-size: large;">Posted By: {{ comment.post.author }}</p>
+    <br/><br/>
+    <h3 style="font-weight: normal"> <i class='fa fa-comment'></i> Comment</h3>
+    <p style="font-size: large; color: black;">{{ comment.comment_detail }}</p>
+    <br/><br/>
+    <a href="{% url 'app_blog:comment-delete' comment.pk %}" class="btn btn-danger btn-sm">Delete</a>
+    <a href="{% url 'app_blog:comment-update' comment.pk %}" class="btn btn-success btn-sm">Edit</a>
+    <br/>
+    <hr/>
+    
+    <br />
+  
+
+{% endblock %}

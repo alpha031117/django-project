@@ -1,21 +1,22 @@
 {% extends "app_blog/base.html" %}
 
 {% block title %}
-  Tag List
+  Tag Detail
 {% endblock %}
 
 {% block content %}
 
-        <h1 class="display-4" style="text-align: center;">Tag {{ post.name }} List</h1>
+        <h1 class="display-4" style="text-align: center;">Tag <i>{{ tag.name }}</i> Detail</h1>
+        <br/>
         <div style="text-align: center;">
-            <a href="{% url 'tag-update' tag.pk %}" class="btn btn-primary">Edit Tag Name -- {{ post.name }}</a>
+            <a href="{% url 'app_blog:tag-update' tag.pk %}" class="btn btn-primary">Edit Tag Name -- {{ tag.name }}</a>
             &nbsp;
-            <a href="{% url 'tag-delete' tag.pk %}" class="btn btn-danger">Delete Tag Name -- {{ post.name }}</a>
+            <a href="{% url 'app_blog:tag-delete' tag.pk %}" class="btn btn-danger">Delete Tag Name -- {{ tag.name }}</a>
         </div>
         <br/><br/>
         <table id="blogTable" class="table display" style="text-align: center;">
             <thead>
-                <th>ID</th>
+                <th>No</th>
                 <th>Title</th>
                 <th>Author</th>
             </thead>
@@ -23,10 +24,10 @@
                 {% for post in tag.post_set.all %}
                     <tr>
                         <td>
-                            {{ post.id }}
+                            {{ forloop.counter }}
                         </td>
                         <td>
-                            <a href="{% url 'post-detail' post.pk %}">
+                            <a href="{% url 'app_blog:post-detail' post.pk %}">
                                 {{ post.title }}
                             </a>                  
                         </td>

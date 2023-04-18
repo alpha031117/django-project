@@ -1,37 +1,38 @@
 from django.urls import path
 from . import views
 
+app_name = 'app_blog'
+
 urlpatterns = [
-    path('', views.blog_home,), # blog home
-    path('blog-list/', views.blog_list, name="blog-list"),
-    path('series-list/', views.series_detail, name="series-list"),
-    path('tag-list/', views.tag_detail, name="tag-list"),
-    # path('comment-list/', )
-    path('create/', views.blog_create,), # function based view to create a blog instance
 
     # url for CRUD Post
-    path('create-post/', views.PostCreateView.as_view(), name="blog-create",),
-    path('<int:pk>/post-detail/', views.PostDetailView.as_view(), name="post-detail"),
-    path('<int:pk>/update2/', views.PostUpdateView.as_view(), name="blog-update"),
-    path('<int:pk>/delete2/', views.PostDeleteView.as_view(), name="blog-delete"),
+    path('post/create', views.PostCreateView.as_view(), name="post-create",),
+    path('post/list/', views.PostListView.as_view(), name="post-list"),
+    path('post/<int:pk>/detail/', views.PostDetailView.as_view(), name="post-detail"),
+    path('post/<int:pk>/update/', views.PostUpdateView.as_view(), name="post-update"),
+    path('post/<int:pk>/delete/', views.PostDeleteView.as_view(), name="post-delete"),
 
     # url for CRUD Comment
     # retrieve comment is done at home (project/urls.py)
-    path('create-comment/', views.CommmentAddView.as_view(), name="blog-comment"),
-    path('<int:pk>/update-comment/', views.CommentUpdateView.as_view(), name="comment-update"),
-    path('<int:pk>/delete-comment/', views.CommentDeleteView.as_view(), name="comment-delete"),
+    path('comment/create/', views.CommmentAddView.as_view(), name="comment-create"),
+    path('comment/list/', views.CommentListView.as_view(), name="comment-list"),
+    path('comment/<int:pk>/update/', views.CommentUpdateView.as_view(), name="comment-update"),
+    path('comment/<int:pk>/delete/', views.CommentDeleteView.as_view(), name="comment-delete"),
+    path('comment/<int:pk>/detail/', views.CommentDetailView.as_view(), name="comment-detail"),
+   
 
     # url for CRUD Series
-    path('create-series/', views.SeriesCreateView.as_view(), name="series-create",),
-    path('<int:pk>/series/', views.SeriesDetailView.as_view(), name="series-detail"),
-    path('<int:pk>/update-series/', views.SeriesUpdateView.as_view(), name="series-update"),
-    path('<int:pk>/delete-series/', views.SeriesDeleteView.as_view(), name="series-delete"),
+    path('series/create/', views.SeriesCreateView.as_view(), name="series-create",),
+     path('series/list/', views.SeriesListView.as_view(), name="series-list"),
+    path('series/<int:pk>/detail/', views.SeriesDetailView.as_view(), name="series-detail"),
+    path('series/<int:pk>/update/', views.SeriesUpdateView.as_view(), name="series-update"),
+    path('series/<int:pk>/delete/', views.SeriesDeleteView.as_view(), name="series-delete"),
 
     # url for CRUD Tag
-    path('create-tag/', views.TagCreateView.as_view(), name="tag-create",),
-    path('<int:pk>/tag/', views.TagDetailView.as_view(), name="tag-detail"),
-    path('<int:pk>/update-tag/', views.TagUpdateView.as_view(), name="tag-update"),
-    path('<int:pk>/delete-tag/', views.TagDeleteView.as_view(), name="tag-delete"),
-
+    path('tag/create/', views.TagCreateView.as_view(), name="tag-create",),
+    path('tag/list/', views.TagListView.as_view(), name="tag-list"),
+    path('tag/<int:pk>/detail/', views.TagDetailView.as_view(), name="tag-detail"),
+    path('tag/<int:pk>/update/', views.TagUpdateView.as_view(), name="tag-update"),
+    path('tag/<int:pk>/delete/', views.TagDeleteView.as_view(), name="tag-delete"),
 
 ]

@@ -1,0 +1,62 @@
+{% extends "app_blog/base.html" %}
+
+{% block title %}
+  Comment List
+{% endblock %}
+
+{% block content %}
+
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+
+        <h1 class="display-4" style="text-align: center;">Comment List</h1>
+
+        <table id="blogTable" class="table display" style="text-align: center;">
+            <thead>
+                <th>No</th>
+                <th>Commenter Name</th>
+                <th>Commented Post</th>
+                <th>Action</th>
+            </thead>
+            <tbody style="text-align: left;">
+                {% for c in object_list %}
+                    <tr>
+                        <td>
+                            {{ forloop.counter }}
+                        </td>
+                        <td>
+                            <a href="{% url 'app_blog:comment-detail' c.id %}">
+                                {{ c.commenter }}
+                            </a>                  
+                        </td>
+                        <td>
+                            {% if c.post %}
+                                {{ c.post}}
+                            {% else %}
+                                <span class="text-muted">
+                                    No posts related
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td> 
+                            <a href="{% url 'app_blog:comment-delete' c.id %}" class="btn btn-danger">Delete</a>
+                            <a href="{% url 'app_blog:comment-update' c.id %}" class="btn btn-success">Edit</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{% url 'app_blog:comment-create' %}" class="btn btn-primary">Create new series</a>
+    </body>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+    <script>
+
+        var table = $('#blogTable').DataTable({
+            //serverSide: true,
+        });
+
+    </script>
+
+{% endblock %}
