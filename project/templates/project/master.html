@@ -57,13 +57,10 @@
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'app_blog:comment-list' %}">Comment List</a>
               </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
-    </header>
+              
+              {% block content %}
+              {% endblock %}
 
-    {% block content %}
-    {% endblock %}
+
 </body>
 </html>

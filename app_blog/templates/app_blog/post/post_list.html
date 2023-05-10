@@ -4,6 +4,18 @@
   Blog List
 {% endblock %}
 
+{% block navbar %}
+    {% if user.is_authenticated %}
+    <li>
+    <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+    </li>
+    {% else %}
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'login' %}">Log In</a>
+    </li>
+    {% endif %}
+{% endblock %}
+
 {% block content %}
 
         <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
@@ -15,7 +27,9 @@
                 <th>No</th>
                 <th>Title</th>
                 <th>Author</th>
+                <th>Contributors</th>
                 <th>Content</th>
+                <th>Sequence</th>
                 <th>Action</th>
             </thead>
             <tbody style="text-align: left;">
@@ -24,18 +38,30 @@
                         <td>
                             {{ forloop.counter }}
                         </td>
+                    {% with forloop.counter as seq %}
                         <td>
                             <a href="{% url 'app_blog:post-detail' blog.pk %}">
                                 {{ blog.title }}
                             </a>                  
                         </td>
                         <td>{{ blog.author }}</td>
+                        <td>
+                            {% for contributor in blog.contributors.all %}
+                                <li>{{ contributor.username }}</li>
+                                {% empty %}
+                                <span class="text-muted">
+                                    No contributors
+                                </span>
+                            {% endfor %}
+                        </td>
                         <td>{{ blog.content }}</td>
+                        <td>{{ blog.sequence }}</td>
                         <td> 
                             <a href="{% url 'app_blog:post-delete' blog.pk %}" class="btn btn-danger">Delete</a>
                             <a href="{% url 'app_blog:post-update' blog.pk %}" class="btn btn-success">Edit</a>
                         </td>
                     </tr>
+                    {% endwith %}
                 {% endfor %}
             </tbody>
         </table>

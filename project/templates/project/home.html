@@ -3,10 +3,21 @@
 
 {% block title %} My Blog {% endblock %}
 
-
 {% block content %}
-
-
+        {% if user.is_authenticated %}
+        <li>
+          <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+        </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'login' %}">Log In</a>
+          </li>
+        {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>
 <!-- Page Content -->
 <!-- Banner Starts Here -->
 <div class="main-banner header-text">
@@ -16,18 +27,32 @@
 </div>
 
 <!-- Banner Ends Here -->
-
 <section class="call-to-action">
+  {% if user.is_authenticated %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert" style="width:80%; margin-left: auto; margin-right: auto;">
+      <h4 style="text-align: center;">Welcome Back, {{ user.username }}.</h4> 
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  {% else %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert" style="width:80%; margin-left: auto; margin-right: auto;">
+      <h4 style="text-align: center;">Please Kindly Login Your Account.</h4> 
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  {% endif %}
   <div class="container">
     <div class="row">
       <div class="col-lg-12">
         <h4>Series</h4>
         <div class="btn-group" role="group" aria-label="Basic example">
           {% for s in series %}
-          <div class="main-button">
-            <a href="{% url 'app_blog:series-detail' s.pk  %}">{{ s.name }}</a>
-          </div>
-          &nbsp;
+            <div class="main-button">
+              <a href="{% url 'app_blog:series-detail' s.pk  %}">{{ s.name }}</a>
+            </div>
+            &nbsp;
           {% endfor %}
         </div>
       </div>
@@ -43,57 +68,90 @@
         <div class="all-blog-posts">
           <div class="row">
             {% for post in post %}
-            <div class="col-lg-12">
-              <div class="blog-post">
-                <div class="down-content">
-                  <h4>{{ post.title }}</h4>
-                  <ul class="post-info">
-                    <li><a href="#">{{ post.author }}</a></li>
-                    <li><a href="#">May 31, 2020</a></li>
-                    <li>
-                      <a href="#">{{ post.comment_set.all.count }} Comments</a>
-                    </li>
-                  </ul>
-                  <p>{{ blog.content }}</p>
-                  <h4 style="font-weight: normal">Comments...</h4>
-                  {% for comments in post.comment_set.all %}
-                  <br />
-                  <i class="fa fa-user"></i>
-                  <b>{{ comments.commenter }} 
-                    <a href="{% url 'app_blog:comment-delete' comments.pk %}" style="color:grey"><i class="fa fa-trash"></i></a>    
-                  </b>
-                  <br />
-                  {{ comments.comment_detail }}
-                  <a href="{% url 'app_blog:comment-update' comments.pk %}" style="color:grey"><i class="fa fa-edit"></i></a>
-                  <br />
+              <div class="col-lg-12">
+                <div class="blog-post">
+                  <div class="down-content">
+                    <a href="{% url 'app_blog:post-detail' post.pk %}"><h4>{{ post.title }}</h4></a>
+                    <ul class="post-info">
+                      <li><a href="#"><strong>Posted By:</strong> {{ post.author }}</a></li>
+                      <li><a href="#"><strong>Created On:</strong> {{ post.created_on|date:"N j Y" }}</a></li>
+                      <li><a href="#"><strong>Updated On:</strong> {{ post.updated_on|timesince }} ago</a></li>
+                      <br/>
+                      <li>
+                        <a href="#">{{ post.comment_set.all.count }} Comments</a>
+                      </li>
+                    </ul>
+                    <p>{{ post.content }}</p>
+                    <h4 style="font-weight: normal">Comments...</h4>
+                    {% for comments in post.comment_set.all %}
+                      <br />
+                      <i class="fa fa-user"></i>
+                      <b>{{ comments.commenter }} 
+                      </b>
+                      <br />
+                      {{ comments.comment_detail }}
+                      <span style="text-align: right;">
+                        
+                      </span>
+
+                      <div style="text-align: right;">
+                        <a href="#" onclick="toggleCommentSection()">Reply</a>
+                        &nbsp;
+                        <a href="{% url 'app_blog:comment-update' comments.pk %}"><u>Edit</u></a>
+                        &nbsp;
+                        <a href="{% url 'app_blog:comment-delete' comments.pk %}"><u>Delete</u></a> 
+                      </div>
+                      <button class="btn btn-sm btn-primary" type="button" data-toggle="collapse" data-target="#replyBox{{comments.pk}}" aria-expanded="false" aria-controls="replyBox{{comment.pk}}">
+                        Reply
+                    </button>
+                    <div class="collapse" id="replyBox{{comments.pk}}">
+                        <div class="card card-body my-2">
+                            <form action="{% url 'app_blog:comment-reply' comments.pk %}" method="post">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="comment">Post a reply </label>
+                                    <input type="text" class="form-control" name="reply_content" placeholder="Enter comment here">
+                                    <input type="hidden" name="parentId" value="{{comments.pk}}">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="replies" style="padding:20px;">
+                      {% for reply in comments.replycomment_set.all %}
+                        {{ reply.replier_name }}
+                        {{ reply.replied_content }}
+                      {% endfor %}
+                    </div>
                   {% endfor %}
 
-                  <br /><br />
-                  <div class="button">
-                    <a href="{% url 'app_blog:comment-create' %}">Add Your Comment?</a>
-                  </div>
+                    <br /><br />
+                    <div class="button">
+                      <a href="{% url 'app_blog:comment-create' post.pk %}">Add Your Comment?</a>
+                    </div>
 
-                  <div class="post-options">
-                    <div class="row">
-                      <div class="col-6">
-                        <ul class="post-tags">
-                          <li><i class="fa fa-tags"></i></li>
-                          {% for tag in post.tags.all %}
-                          <li><a href="#">{{ tag }}</a></li>
-                          {% endfor %}
-                        </ul>
-                      </div>
-                      <div class="col-6">
-                        <ul class="post-share">
-                          <li><i class="fa fa-bookmark"></i></li>
-                          <li><a href="{% url 'app_blog:series-detail' post.series.pk  %}">{{ post.series }}</a></li>
-                        </ul>
+                    <div class="post-options">
+                      <div class="row">
+                        <div class="col-6">
+                          <ul class="post-tags">
+                            <li><i class="fa fa-tags"></i></li>
+                            {% for tag in post.tags.all %}
+                              <li><a href="#">{{ tag }}</a></li>
+                            {% endfor %}
+                          </ul>
+                        </div>
+                        <div class="col-6">
+                          <ul class="post-share">
+                            <li><i class="fa fa-bookmark"></i></li>
+                            <li><a href="{% url 'app_blog:series-detail' post.series.pk  %}">{{ post.series }}</a></li>
+                          </ul>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
             {% endfor %}
 
             <div class="col-lg-12">
@@ -149,7 +207,7 @@
                 <div class="content">
                   <ul>
                     {% for s in series %}
-                    <li><a href="{% url 'app_blog:series-detail' s.pk  %}">{{ s.name }}</a></li>
+                      <li><a href="{% url 'app_blog:series-detail' s.pk  %}">{{ s.name }}</a></li>
                     {% endfor %}
                   </ul>
                 </div>
@@ -163,7 +221,7 @@
                 <div class="content">
                   <ul>
                     {% for t in tags %}
-                    <li><a href="{% url 'app_blog:tag-detail' t.pk  %}">{{ t.name }}</a></li>
+                      <li><a href="{% url 'app_blog:tag-detail' t.pk  %}">{{ t.name }}</a></li>
                     {% endfor %}
                   </ul>
                 </div>
@@ -210,4 +268,5 @@
     }
   }
 </script>
+
 {% endblock %}

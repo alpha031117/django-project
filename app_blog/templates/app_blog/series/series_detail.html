@@ -4,6 +4,18 @@
   Series Detail
 {% endblock %}
 
+{% block navbar %}
+    {% if user.is_authenticated %}
+    <li>
+    <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+    </li>
+    {% else %}
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'login' %}">Log In</a>
+    </li>
+    {% endif %}
+{% endblock %}
+
 {% block content %}
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 
@@ -20,21 +32,25 @@
                 <th>No</th>
                 <th>Title</th>
                 <th>Author</th>
+                <th>Sequence (Tetsing Purpose)</th>
             </thead>
             <tbody style="text-align: left;">
                 {% for post in post %}
-                    <tr>
-                        <td>
-                            {{ forloop.counter }}
-                        </td>
-                        <td>
-                            <a href="{% url 'app_blog:post-detail' post.pk %}">
-                                {{ post.title }}
-                            </a>                  
-                        </td>
-                        <td>{{ post.author }}</td>
-                    </tr>
-                    {% endfor %}
+                    {% with forloop.counter as seq %}
+                        <tr>
+                            <td>
+                                {{ forloop.counter }}
+                            </td>
+                            <td>
+                                <a href="{% url 'app_blog:post-detail' post.pk %}">
+                                    {{ post.title }}
+                                </a>                  
+                            </td>
+                            <td>{{ post.author }}</td>
+                            <td>{{ post.sequence }}</td> // testing purpose
+                        </tr>
+                    {% endwith %}
+                {% endfor %}
             </tbody>
         </table>
     </body>

@@ -1,5 +1,7 @@
 from django.urls import path
 from . import views
+from django.conf.urls.static import static
+from django.conf import settings
 
 app_name = 'app_blog'
 
@@ -14,7 +16,8 @@ urlpatterns = [
 
     # url for CRUD Comment
     # retrieve comment is done at home (project/urls.py)
-    path('comment/create/', views.CommmentAddView.as_view(), name="comment-create"),
+    path('comment/<int:pk>/create/', views.CommmentAddView.as_view(), name="comment-create"),
+    path('comment/<int:pk>/reply/', views.replyComment, name="comment-reply"),
     path('comment/list/', views.CommentListView.as_view(), name="comment-list"),
     path('comment/<int:pk>/update/', views.CommentUpdateView.as_view(), name="comment-update"),
     path('comment/<int:pk>/delete/', views.CommentDeleteView.as_view(), name="comment-delete"),
@@ -35,4 +38,4 @@ urlpatterns = [
     path('tag/<int:pk>/update/', views.TagUpdateView.as_view(), name="tag-update"),
     path('tag/<int:pk>/delete/', views.TagDeleteView.as_view(), name="tag-delete"),
 
-]
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -9,12 +9,28 @@
   Comment Post
 {% endblock %}
 
+{% block navbar %}
+    {% if user.is_authenticated %}
+    <li>
+    <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+    </li>
+    {% else %}
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'login' %}">Log In</a>
+    </li>
+    {% endif %}
+{% endblock %}
+
 {% block content %}
         <h1 class="display-4" style="text-align: center;">Update Comment</h1>
         <div class="container">
             <div class="row my-5">
                 <div class="col-md-12">
+                    Post
                     <input class="form-control" type="text" placeholder="{{ object.post }}" readonly>
+                    <br>
+                    Commenter
+                    <input class="form-control" type="text" placeholder="{{ object.commenter }}" readonly>
                     <br>
                     <form method="post">
                         {% csrf_token %}

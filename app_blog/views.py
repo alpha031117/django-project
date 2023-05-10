@@ -1,10 +1,12 @@
-from django.shortcuts import render
-from .models import Post, Comment, Series, Tag
-from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, redirect
+from .models import Post, Comment, Series, Tag, ReplyComment, PostFile
+from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.views.generic import DetailView, ListView
-
+from django.views.generic import DetailView, ListView, View
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import get_object_or_404
+from .forms import PostForm
 
 # Create your views here.
 def blog_home(request):
@@ -26,6 +28,7 @@ class SeriesDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['post'] = Post.objects.filter(series=self.object)
+        context['x'] = 1
         return context
 
 class SeriesCreateView(CreateView):
@@ -57,9 +60,22 @@ class PostDetailView(DetailView):
     
 class PostCreateView(CreateView):
     model = Post
-    fields = '__all__'
+    form_class = PostForm
     template_name = 'app_blog/post/post_form.html'
     success_url = reverse_lazy("app_blog:post-list")
+
+    def form_valid(self, form):
+        post = form.save(commit=False)
+        post.author = self.request.user
+        post.save()
+        for f in self.request.FILES.getlist('files'):
+            PostFile.objects.create(post=post, file=f)
+        return super().form_valid(form)
+    
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
     # Behind the scenes,
     # 1) form is automatically generated and accessible via {{ form }} in template
@@ -80,15 +96,34 @@ class PostDeleteView(DeleteView):
     success_url = reverse_lazy("app_blog:post-list")
 
 # Model Comment CRUD
-class CommmentAddView(CreateView):
+class CommmentAddView(LoginRequiredMixin, CreateView):
     model = Comment
-    fields = "__all__"
+    fields = ['comment_detail']
     template_name = 'app_blog/comment/comment_form.html'
     success_url = reverse_lazy("app_blog:comment-list")
 
+    def form_valid(self, form):
+        post_id = get_object_or_404(Post, pk=self.kwargs['pk'])
+        form.instance.post = post_id
+        form.instance.commenter = self.request.user
+
+        return super().form_valid(form)
+
+def replyComment(request,pk):
+   comments = Comment.objects.get(id= pk)
+
+   if request.method == 'POST':
+       replier_name = request.user
+       reply_content = request.POST.get('reply_content')
+
+       newReply = ReplyComment(replier_name=replier_name, reply_content=reply_content)
+       newReply.reply_comment = comments
+       newReply.save()
+       return redirect('app_blog:comment-list')
+
 class CommentUpdateView(UpdateView):
     model = Comment
-    fields = ['commenter', 'comment_detail']
+    fields = ['comment_detail']
     template_name = 'app_blog/comment/comment_update.html'
     success_url = reverse_lazy("app_blog:comment-list") # when a Post is successfully updated, redirect to this url
 
@@ -104,7 +139,6 @@ class CommentListView(ListView):
 class CommentDetailView(DetailView):
     model = Comment
     template_name = 'app_blog/comment/comment_detail.html'
-
 
 # Model Tag CRUD
 class TagListView(ListView):

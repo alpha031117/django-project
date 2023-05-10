@@ -4,6 +4,18 @@
   Comment Detail
 {% endblock %}
 
+{% block navbar %}
+    {% if user.is_authenticated %}
+    <li>
+    <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+    </li>
+    {% else %}
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'login' %}">Log In</a>
+    </li>
+    {% endif %}
+{% endblock %}
+
 {% block content %}
 <h1 class="display-4" style="text-align: center;">Comment Detail</h1>
     <h3><i class="fa fa-user"></i> {{ comment.commenter }}</h3>
