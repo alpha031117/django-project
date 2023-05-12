@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Post, Comment, Series, Tag, ReplyComment, PostFile
+from .models import Post, Comment, Series, Tag, PostFile
 from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -108,19 +108,19 @@ class CommmentAddView(LoginRequiredMixin, CreateView):
         form.instance.commenter = self.request.user
 
         return super().form_valid(form)
-
+                
 def replyComment(request,pk):
-   comments = Comment.objects.get(id= pk)
-
+   parent_comment = Comment.objects.get(id= pk)
+   
    if request.method == 'POST':
        replier_name = request.user
        reply_content = request.POST.get('reply_content')
-
-       newReply = ReplyComment(replier_name=replier_name, reply_content=reply_content)
-       newReply.reply_comment = comments
+       postid = request.POST.get('postID')
+       post = Post.objects.get(id= postid)
+       newReply = Comment(commenter=replier_name, comment_detail=reply_content, post=post, parent = parent_comment)
        newReply.save()
        return redirect('app_blog:comment-list')
-
+   
 class CommentUpdateView(UpdateView):
     model = Comment
     fields = ['comment_detail']

@@ -1,0 +1,42 @@
+
+{% for reply in replies %}
+    <div class="replies" style="padding: 20px;">
+        <i class="fa fa-user"></i>
+        <b>{{ reply.commenter }}</b>
+        <div style="color:gray;">
+            {{ reply.comment_date|date:"j N Y" }} 
+            {{ reply.comment_date|time }} 
+          </div>
+        <br />
+        {{ reply.comment_detail }}
+        <div style="text-align: right;">
+            <button class="btn btn-sm btn-primary" type="button" data-toggle="collapse" data-target="#replyBox{{reply.pk}}" aria-expanded="false" aria-controls="replyBox{{comment.pk}}">
+                Reply
+            </button>
+              &nbsp;
+            <a href="{% url 'app_blog:comment-update' reply.pk %}"><u>Edit</u></a>
+            &nbsp;
+            <a href="{% url 'app_blog:comment-delete' reply.pk %}"><u>Delete</u></a> 
+          </div>
+
+        <div class="collapse" id="replyBox{{reply.pk}}">
+            <div class="card card-body my-2">
+                <form action="{% url 'app_blog:comment-reply' reply.pk %}" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="comment">Post a reply </label>
+                        <input type="text" class="form-control" name="reply_content" placeholder="Enter comment here">
+                        <input type="hidden" name="postID" value="{{post.pk}}">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Render nested replies -->
+        {% include 'app_blog/comment/comment_reply.html' with replies=reply.comment_set.all %}
+        
+    </div>
+{% empty %}
+    <!-- No replies -->
+{% endfor %}
