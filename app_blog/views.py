@@ -7,7 +7,12 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import DetailView, ListView, View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
-from .forms import PostForm
+from .forms import PostForm, TagCreateForm
+
+
+# API endpoint for api_one
+def api_one(request):
+    return JsonResponse({"message": "Hello, World!"})
 
 
 # Create your views here.
@@ -216,7 +221,7 @@ class TagDetailView(DetailView):
 
 class TagCreateView(CreateView):
     model = Tag
-    fields = "__all__"
+    form_class = TagCreateForm
     template_name = "app_blog/tag/tag_form.html"
     success_url = reverse_lazy("app_blog:tag-list")
 

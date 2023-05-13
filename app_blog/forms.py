@@ -1,9 +1,11 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.forms import ModelForm, ClearableFileInput
-from .models import Post, Comment
+from .models import Post, Comment, Tag
 from django.shortcuts import get_object_or_404
+from django.core.exceptions import ValidationError
 
+    
 class PostForm(ModelForm):
     class Meta:
         model = Post
@@ -27,6 +29,8 @@ class PostForm(ModelForm):
         self.fields["series"].widget.attrs.update({"class": "form-control"})
         self.fields["contributors"].widget.attrs.update({"class": "form-control"})
 
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Submit, Div
 
 # Define a form class to be used for ReplyCommentCreateView
 class ReplyCommentForm(forms.ModelForm):
@@ -40,6 +44,18 @@ class ReplyCommentForm(forms.ModelForm):
     def __init__(self, *args, pk=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.pk = pk
+
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-sm-2'
+        self.helper.field_class = 'col-sm-10'
+        # self.helper.layout = Layout(
+        #         'commenter',
+        #         'comment_detail',
+        #         Submit('submit', 'Submit')
+        #     )
+
+
 
     # Clean the form to assign the parent comment and post to the reply comment
     def clean(self):
@@ -59,3 +75,36 @@ class ReplyCommentForm(forms.ModelForm):
 
         # Done
         return cleaned_data
+
+
+
+class generalErrorMixin:
+    def clean(self):
+        # Check if any field has an error
+        if self.errors:
+            raise forms.ValidationError("Please fix the errors below and try again")
+        
+class TagCreateForm(generalErrorMixin, forms.ModelForm):
+
+    class Meta:
+        model = Tag
+        fields = (
+            "name",
+        )
+
+    def clean_name(self):
+        super().clean()
+        name = self.cleaned_data['name']
+        matching_tags = Tag.objects.filter(name__iexact=name)
+
+        error_collection = []
+
+        if matching_tags.exists():
+            # The name matches a record in the database
+            # You can raise a validation error or perform further actions as needed
+            error_collection.append("Tag name already exists.")
+
+        if error_collection:
+            raise forms.ValidationError(error_collection)
+        
+        return name
