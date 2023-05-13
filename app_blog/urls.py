@@ -40,4 +40,9 @@ urlpatterns = [
     path('tag/<int:pk>/update/', views.TagUpdateView.as_view(), name="tag-update"),
     path('tag/<int:pk>/delete/', views.TagDeleteView.as_view(), name="tag-delete"),
 
+
+    # API
+    path('api/api_one', views.api_one, name="api_one"),
+
+
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
