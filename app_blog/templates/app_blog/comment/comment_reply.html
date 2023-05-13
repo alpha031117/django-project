@@ -13,6 +13,8 @@
             <button class="btn btn-sm btn-primary" type="button" data-toggle="collapse" data-target="#replyBox{{reply.pk}}" aria-expanded="false" aria-controls="replyBox{{comment.pk}}">
                 Reply
             </button>
+            <a href="{% url 'app_blog:reply-comment-create' reply.pk %}" class="btn btn-sm btn-outline-success">Reply</a>
+
               &nbsp;
             <a href="{% url 'app_blog:comment-update' reply.pk %}"><u>Edit</u></a>
             &nbsp;

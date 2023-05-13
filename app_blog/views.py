@@ -1,6 +1,7 @@
+from typing import Any
 from django.shortcuts import render, redirect
 from .models import Post, Comment, Series, Tag, PostFile
-from django.http import JsonResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import DetailView, ListView, View
@@ -120,6 +121,36 @@ def replyComment(request,pk):
        newReply = Comment(commenter=replier_name, comment_detail=reply_content, post=post, parent = parent_comment)
        newReply.save()
        return redirect('app_blog:comment-list')
+   
+
+class ReplyCommentCreateView(LoginRequiredMixin, CreateView):
+
+    model = Comment
+    fields = ('comment_detail', 'commenter',)
+    template_name = 'app_blog/comment/reply_comment_form.html'
+    success_url = reverse_lazy("app_blog:comment-list")
+
+    # Ensure that a comment with the url pk exists by overriding get method
+    def get(self, request, *args, **kwargs):
+
+        comment = get_object_or_404(Comment, pk=self.kwargs['pk'])
+        return super().get(request, *args, **kwargs)
+
+    # Assign the parent comment and post to the reply comment
+    def form_valid(self, form):
+
+        # Get the comment to be created
+        instance = form.instance
+
+        # Assign the parent comment to the instance
+        instance.parent = get_object_or_404(Comment, pk=self.kwargs['pk'])
+
+        # Assign the post to the instance
+        instance.post = instance.parent.post
+
+        # Done
+        return super().form_valid(form)
+
    
 class CommentUpdateView(UpdateView):
     model = Comment

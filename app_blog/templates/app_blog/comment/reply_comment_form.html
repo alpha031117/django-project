@@ -1,0 +1,31 @@
+{% extends "app_blog/base.html" %}
+{% load crispy_forms_tags %}
+
+
+{% block title %}
+  Reply comment
+{% endblock %}
+
+{% block navbar %}
+    {% if user.is_authenticated %}
+    <li>
+    <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+    </li>
+    {% else %}
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'login' %}">Log In</a>
+    </li>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    <!-- load crispy form -->
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+
+{% endblock content %}
